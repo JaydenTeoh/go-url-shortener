@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/gophercises/urlshort"
+	urlshort "github.com/JaydenTeoh/url-shortener/handler"
 )
 
 func main() {
-	mux := defaultMux()
+	mux := defaultMux() //fallback http.Handler
 
 	// Build the MapHandler using the mux as the fallback
 	pathsToUrls := map[string]string{
@@ -20,10 +20,10 @@ func main() {
 	// Build the YAMLHandler using the mapHandler as the
 	// fallback
 	yaml := `
-- path: /urlshort
-  url: https://github.com/gophercises/urlshort
-- path: /urlshort-final
-  url: https://github.com/gophercises/urlshort/tree/solution
+- path: /github
+  url: https://github.com/JaydenTeoh
+- path: /linkedin
+  url: https://www.linkedin.com/in/jayden-teoh/
 `
 	yamlHandler, err := urlshort.YAMLHandler([]byte(yaml), mapHandler)
 	if err != nil {
@@ -34,11 +34,14 @@ func main() {
 }
 
 func defaultMux() *http.ServeMux {
-	mux := http.NewServeMux()
+	mux := http.NewServeMux() //ServeMux type has a ServeHTTP() method, meaning that it too satisfies the http. Handler interface.
 	mux.HandleFunc("/", hello)
 	return mux
 }
 
 func hello(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "Hello, world!")
+	fmt.Fprintln(w, "Welcome to my URL shortener.")
+	fmt.Fprintln(w, "  Add the following /:path to the URL to access different pages.")
+	fmt.Fprintln(w, "     /github: My Github Page")
+	fmt.Fprintln(w, "     /linkedin: My Linkedin Page")
 }
